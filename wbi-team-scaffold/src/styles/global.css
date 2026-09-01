@@ -1,0 +1,8 @@
+/* TODO (Jan Cedric): Build the real design system here - color tokens,
+   Inter/IBM Plex Mono typography, sidebar shell, KPI tiles, pills, tables
+   (with responsive stacking + scroll wrapper), forms, login page, all
+   responsive breakpoints. See handoff notes for the exact palette. */
+body {
+  font-family: sans-serif;
+  margin: 0;
+}
