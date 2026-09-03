@@ -1,18 +1,55 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState } from "react";
 
-// TODO (Cornelio): Replace this file with the real mock-auth implementation.
-// It needs to export AuthProvider and useAuth() with: user, isAuthenticated,
-// login(email, password), logout(). See the handoff notes for the exact
-// demo credentials to check against and the localStorage persistence.
+// DEMO CREDENTIALS ONLY. This is a frontend-only mock: there is no server
+// verifying anything, the "password" is sitting in plain text in this file,
+// and anyone can bypass it by editing localStorage. It exists so the login
+// flow can be demoed and reviewed before the real Laravel backend (which
+// does check credentials properly) is wired in. Do not treat this as real
+// authentication or ship it as-is.
+const DEMO_EMAIL = "admin@walangbrownout.test";
+const DEMO_PASSWORD = "password";
+const STORAGE_KEY = "wbi_mock_auth";
+
 const AuthContext = createContext(null);
 
+function readStoredUser() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const value = { user: null, isAuthenticated: true, login: () => ({ ok: true }), logout: () => {} };
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const [user, setUser] = useState(readStoredUser);
+
+  const login = (email, password) => {
+    if (email.trim().toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) {
+      const loggedInUser = { name: "Admin User", email: DEMO_EMAIL };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(loggedInUser));
+      setUser(loggedInUser);
+      return { ok: true };
+    }
+    return { ok: false, error: "These credentials do not match our records." };
+  };
+
+  const logout = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
+  return ctx;
 }
 
-export const DEMO_CREDENTIALS = { email: "TODO@example.com", password: "TODO" };
+export const DEMO_CREDENTIALS = { email: DEMO_EMAIL, password: DEMO_PASSWORD };
