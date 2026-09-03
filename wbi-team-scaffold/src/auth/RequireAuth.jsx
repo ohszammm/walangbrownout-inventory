@@ -1,5 +1,13 @@
-// TODO (Cornelio): Replace this with the real route guard that redirects
-// to /login when the user isn't authenticated (see useAuth().isAuthenticated).
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+
 export default function RequireAuth({ children }) {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
   return children;
 }
