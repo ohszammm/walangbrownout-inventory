@@ -1,6 +1,26 @@
-// TODO (Jan Cedric): Build the real live-updating clock badge here -
-// ticks every second using new Date(), shown compactly next to the page
-// title. See handoff notes.
+import { useEffect, useState } from "react";
+
 export default function LiveClock() {
-  return <span>TODO: live clock (Jan Cedric)</span>;
+  const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const dateStr = now.toLocaleDateString(undefined, {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const timeStr = now.toLocaleTimeString(undefined, { hour12: false });
+
+  return (
+    <div className="live-clock">
+      <span className="live-clock-dot" />
+      <span className="live-clock-label">Live system clock</span>
+      <span className="live-clock-value">{dateStr}, {timeStr}</span>
+    </div>
+  );
 }
