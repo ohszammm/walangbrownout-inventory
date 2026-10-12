@@ -1,24 +1,25 @@
 # Replace the placeholder usernames with each member's real GitHub username.
 # Each owner is automatically requested as a reviewer for changes in their area.
+# Samuel is listed on every line so he can approve and merge everyone's pull requests.
 # (Owners must have Write access to the repository.)
 
 # Default owner: the Team Lead reviews anything not listed below
 *                       @ohszammm
 
 # Backend: Ordonia, Cholo Andrew
-/app/                   @AndrewOrdonia
-/routes/api.php         @AndrewOrdonia
+/app/                   @AndrewOrdonia @ohszammm
+/routes/api.php         @AndrewOrdonia @ohszammm
 
 # Frontend / UI: Morasa, Desiree O.
-/src/                   @wreine
-/public/brand/          @wreine
-/public/media/          @wreine
+/src/                   @wreine @ohszammm
+/public/brand/          @wreine @ohszammm
+/public/media/          @wreine @ohszammm
 
 # Database: Maño, Cornelio Jr.
-/database/              @GMasterer
-/docs/database/         @GMasterer
+/database/              @GMasterer @ohszammm
+/docs/database/         @GMasterer @ohszammm
 
 # QA and Documentation: Nuqui, Jan Cedric T.
-/tests/                 @Nuqui-nuks
-/docs/                  @Nuqui-nuks
-/.github/ISSUE_TEMPLATE/ @Nuqui-nuks
+/tests/                 @Nuqui-nuks @ohszammm
+/docs/                  @Nuqui-nuks @ohszammm
+/.github/ISSUE_TEMPLATE/ @Nuqui-nuks @ohszammm
