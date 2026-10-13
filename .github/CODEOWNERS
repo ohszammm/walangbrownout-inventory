@@ -1,25 +1,26 @@
-# Replace the placeholder usernames with each member's real GitHub username.
 # Each owner is automatically requested as a reviewer for changes in their area.
 # Samuel is listed on every line so he can approve and merge everyone's pull requests.
+# Jan is a second owner of the default line so Samuel's own PRs can be approved.
+# The LAST matching line wins, so specific paths come after general ones.
 # (Owners must have Write access to the repository.)
 
-# Default owner: the Team Lead reviews anything not listed below
-*                       @ohszammm
-
-# Backend: Ordonia, Cholo Andrew
-/app/                   @AndrewOrdonia @ohszammm
-/routes/api.php         @AndrewOrdonia @ohszammm
-
-# Frontend / UI: Morasa, Desiree O.
-/src/                   @wreine @ohszammm
-/public/brand/          @wreine @ohszammm
-/public/media/          @wreine @ohszammm
-
-# Database: Maño, Cornelio Jr.
-/database/              @GMasterer @ohszammm
-/docs/database/         @GMasterer @ohszammm
+# Default owners: anything not listed below
+*                        @ohszammm @Nuqui-nuks
 
 # QA and Documentation: Nuqui, Jan Cedric T.
-/tests/                 @Nuqui-nuks @ohszammm
-/docs/                  @Nuqui-nuks @ohszammm
+/tests/                  @Nuqui-nuks @ohszammm
+/docs/                   @Nuqui-nuks @ohszammm
 /.github/ISSUE_TEMPLATE/ @Nuqui-nuks @ohszammm
+
+# Database: Maño, Cornelio Jr.   (after /docs/ so it wins for the ERD)
+/database/               @GMasterer @ohszammm
+/docs/database/          @GMasterer @ohszammm
+
+# Backend: Ordonia, Cholo Andrew
+/app/                    @AndrewOrdonia @ohszammm
+/routes/api.php          @AndrewOrdonia @ohszammm
+
+# Frontend / UI: Morasa, Desiree O.
+/src/                    @wreine @ohszammm
+/public/brand/           @wreine @ohszammm
+/public/media/           @wreine @ohszammm
