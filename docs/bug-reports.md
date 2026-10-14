@@ -1,15 +1,17 @@
 # Bug Reports
 ## WalangBrownout Inventory Management System
 
-**Prepared by:** QA and Documentation Lead  
-**Project:** WalangBrownout Inventory Management System  
-**Purpose:** To document, track, and verify software defects discovered during testing.
+Prepared by: QA and Documentation Lead  
+Project: WalangBrownot Inventory Management System  
+Purpose: To document, track, and verify software defects discovered during manual and automated testing.
 
 ## 1. Purpose
 
 This document provides a standard format for recording bugs found during manual or automated testing. Each report should contain enough information for the development team to understand, reproduce, and investigate the issue.
 
-**Note:** No confirmed bugs are listed yet. Bug entries should be added only after an issue has been observed during testing.
+API-related defects may include unexpected HTTP status codes, incorrect response data, authorization failures, invalid input handling, and unexpected server errors.
+
+Note: No confirmed bugs are listed yet. Bug entries should be added only after an issue has been observed and investigated during testing.
 
 ## 2. Bug Report Template
 
@@ -17,48 +19,50 @@ Use the following template for every confirmed issue.
 
 ### Bug ID: BUG-001
 
-- **Title:** [Short description of the issue]
-- **Date Reported:** [YYYY-MM-DD]
-- **Reported By:** [Name or team role]
-- **Related Test Case:** [TC-01 to TC-12, if applicable]
-- **Module:** [Authentication / Inventory / Warehouse / Purchasing / Sales / Reports]
-- **Severity:** [Critical / High / Medium / Low]
-- **Priority:** [High / Medium / Low]
-- **Environment:** [Browser, operating system, server, and test environment]
-- **Status:** Open
-- **Assigned To:** [Developer or team, if known]
+- Title: [Short description of the issue]
+- Date Reported: [YYYY-MM-DD]
+- Reported By: [Name or team role]
+- Related Test Case: [TC-01 to TC-12 or relevant API test name]
+- Module: [Authentication / Inventory / Warehouse / Purchasing / Sales / Reports / API]
+- API Endpoint: [Endpoint and HTTP method, if applicable]
+- HTTP Status Code: [Actual status code, if applicable]
+- Severity: [Critical / High / Medium / Low]
+- Priority: [High / Medium / Low]
+- Environment: [Browser, operating system, server, and test environment]
+- Status: Open
+- Assigned To: [Developer or team, if known]
 
-**Description**
+### Description
 
 [Explain what happened and why it appears to be a defect.]
 
-**Preconditions**
+### Preconditions
 
 [List any required account, role, data, or system state.]
 
-**Steps to Reproduce**
+### Steps to Reproduce
 
 1. [First action]
 2. [Second action]
 3. [Continue until the issue occurs]
 
-**Expected Result**
+### Expected Result
 
 [Describe what should happen according to the requirements or test case.]
 
-**Actual Result**
+### Actual Result
 
 [Describe what actually happened.]
 
-**Evidence**
+### Evidence
 
-[Attach a screenshot, error message, response, or relevant log when available.]
+[Attach a screenshot, error message, sanitized API response, test output, or relevant log when available.]
 
-**Resolution**
+### Resolution
 
 [Complete after the development team fixes or otherwise resolves the issue.]
 
-**Retest Result**
+### Retest Result
 
 [Not yet tested / Pass / Fail]
 
@@ -89,7 +93,24 @@ Add an entry only when an issue has actually been observed.
 |---|---|---|---|---|---|
 | No confirmed bugs recorded | — | — | — | — | Not applicable |
 
-## 6. Bug Lifecycle
+## 6. API Testing Defect Guidelines
+
+When an API test fails, investigate the failure before classifying it as a confirmed application defect.
+
+Check the following:
+
+- Whether the Laravel server is running and reachable.
+- Whether the database and required test data are available.
+- Whether the request uses the correct endpoint, HTTP method, and input data.
+- Whether the authenticated user has the required permissions.
+- Whether the actual HTTP status code and response match the test assertions.
+- Whether the failure is caused by application behavior, configuration, or test-environment problems.
+
+Record the relevant test name, endpoint, expected response, actual response, and sanitized evidence.
+
+A failed automated assertion does not automatically establish that the application contains a defect.
+
+## 7. Bug Lifecycle
 
 1. **Open:** The issue has been reported and needs investigation.
 2. **In Progress:** The development team is investigating or fixing the issue.
@@ -98,22 +119,25 @@ Add an entry only when an issue has actually been observed.
 5. **Closed:** QA has verified the fix and the issue is resolved.
 6. **Reopened:** The issue still occurs or returns after a proposed fix.
 
-## 7. Retesting Guidelines
+## 8. Retesting Guidelines
 
 After a fix is provided:
 
 1. Repeat the original reproduction steps.
 2. Compare the actual result with the expected result.
-3. Check related functionality for unintended side effects.
-4. Record the retest result and evidence.
-5. Close the bug only when the fix is verified.
+3. For API defects, repeat the relevant request or automated test.
+4. Check related functionality for unintended side effects.
+5. Record the retest result and evidence.
+6. Close the bug only when the fix is verified.
 
 If the issue persists, record the new evidence and reopen the report.
 
-## 8. QA Notes
+## 9. QA Notes
 
 - Do not report an issue as confirmed without evidence or reproducible behavior.
 - Do not mark a bug as fixed solely because code changes were made.
 - Keep test results and bug status consistent.
-- Avoid including passwords, private user information, or other sensitive data in screenshots and logs.
+- Avoid including passwords, private user information, access tokens, or other sensitive data in screenshots and logs.
 - Link bugs to the relevant test case whenever possible.
+- Do not invent bug reports or mark unexecuted API tests as failed.
+- Update the tracking log as defects are discovered, fixed, and retested.

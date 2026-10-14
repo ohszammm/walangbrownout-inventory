@@ -1,10 +1,10 @@
 # QA Test Cases
 ## WalangBrownout Inventory Management System
 
-Prepared by: Jan Cedric T. Nuqui
-Role: QA and Documentation Lead
-System: WalangBrownout Inventory Management System
-Test Type: API and Functional Testing
+**Prepared by:** Jan Cedric T. Nuqui  
+**Role:** QA and Documentation Lead  
+**System:** WalangBrownout Inventory Management System  
+**Test Type:** API and Functional Testing
 
 ## 1. Purpose
 
@@ -28,7 +28,7 @@ php artisan migrate:fresh --seed
 php artisan serve
 ```
 
-Then run the tests:
+Then run the tests in another terminal:
 
 ```bash
 npm run test:api
@@ -42,7 +42,7 @@ Warning: `php artisan migrate:fresh --seed` resets the database. Use only an app
 
 Objective: Verify login behavior, account restrictions, and session handling.
 
-Test steps:
+Test Steps:
 1. Request the dashboard without logging in.
 2. Attempt to log in with an incorrect password.
 3. Attempt to log in using a disabled account.
@@ -51,7 +51,7 @@ Test steps:
 6. Retrieve the authenticated user's information.
 7. Log out and request the dashboard again.
 
-Expected results:
+Expected Results:
 - Unauthenticated dashboard access returns HTTP 401.
 - Incorrect credentials return HTTP 401.
 - Disabled and pending accounts return HTTP 403.
@@ -64,13 +64,13 @@ Expected results:
 
 Objective: Verify protection against repeated failed login attempts.
 
-Test steps:
+Test Steps:
 1. Submit five login attempts with incorrect passwords for the sales account.
 2. Attempt to log in using the correct password.
 3. Use the administrator account to reactivate the affected account.
 4. Attempt login again using the correct password.
 
-Expected results:
+Expected Results:
 - Login after repeated failures returns HTTP 429.
 - The administrator can update the account status successfully.
 - Login succeeds after the account is unlocked.
@@ -79,7 +79,7 @@ Expected results:
 
 Objective: Verify that each role can access only its permitted functions.
 
-Test steps:
+Test Steps:
 1. Log in as administrator, inventory manager, purchasing manager, warehouse staff, and sales staff.
 2. Attempt to access user management using each role.
 3. Attempt product creation using different roles.
@@ -88,7 +88,7 @@ Test steps:
 6. Check product information exposed to sales and warehouse staff.
 7. Access inventory and purchasing reports using different roles.
 
-Expected results:
+Expected Results:
 - User management is restricted to the administrator.
 - Product creation is allowed for administrator and inventory manager accounts.
 - Duplicate product creation is rejected with HTTP 409.
@@ -98,9 +98,10 @@ Expected results:
 - Inventory and purchasing reports enforce role restrictions.
 
 ### TC-04: Role Permission Updates
+
 Objective: Verify that administrator-managed role permissions take effect.
 
-Test steps:
+Test Steps:
 1. Log in as administrator and inventory manager.
 2. Confirm that the inventory manager cannot create purchase orders by default.
 3. Grant the inventory role the `po.create` permission.
@@ -110,7 +111,7 @@ Test steps:
 7. Attempt to remove protected administrator permissions.
 8. Attempt to change the administrator's own role.
 
-Expected results:
+Expected Results:
 - Purchase-order creation is initially forbidden.
 - After permission is granted, the empty request reaches validation and returns HTTP 400.
 - Restoring permissions returns access to the original restricted behavior.
@@ -119,9 +120,9 @@ Expected results:
 
 ### TC-05: Physical Count Discrepancy and Overselling Prevention
 
-Objective: Verify that physical inventory counts limit availability and prevent overselling.
+**Objective:** Verify that physical inventory counts limit availability and prevent overselling.
 
-Test steps:
+Test Steps:
 1. Retrieve product availability as sales staff.
 2. Check the test product with SKU `THM-2200`.
 3. Attempt to order more units than the recorded available quantity.
@@ -132,7 +133,7 @@ Test steps:
 8. Investigate and resolve the discrepancy using a stock adjustment.
 9. Retrieve the product and alerts again.
 
-Expected results:
+Expected Results:
 - The seeded test scenario reports 12 available units for `THM-2200`, despite a higher system quantity.
 - An order exceeding available stock returns HTTP 409.
 - The order error identifies insufficient stock.
@@ -143,9 +144,9 @@ Expected results:
 
 ### TC-06: FEFO Picking and Shipment Workflow
 
-Objective: Verify that picking follows expiry priority and that shipment actions respect workflow rules.
+**Objective:** Verify that picking follows expiry priority and that shipment actions respect workflow rules.
 
-Test steps:
+Test Steps:
 1. Retrieve availability for product SKU `FLT-F023`.
 2. Create a sales order for 40 units.
 3. Retrieve the corresponding warehouse pick order.
@@ -157,7 +158,7 @@ Test steps:
 9. Attempt to ship the same order again.
 10. Attempt to cancel the order after the tested workflow has advanced.
 
-Expected results:
+Expected Results:
 - The picking plan selects the nearest eligible expiry first.
 - Expired batch `B-2105` is not selected.
 - The tested plan picks 30 units from `B-2207` and 10 from `B-2311`.
@@ -171,14 +172,14 @@ Expected results:
 
 Objective: Verify receiving validation, batch creation, and duplicate-receiving protection.
 
-Test steps:
+Test Steps:
 1. Retrieve incoming shipment `SHP-0002` as warehouse staff.
 2. Submit a receiving request with no items.
 3. Submit a valid receiving request with a quantity of 90 for the tested item.
 4. Attempt to receive the same shipment again.
 5. Inspect the resulting batch and discrepancy alerts.
 
-Expected results:
+Expected Results:
 - Receiving without items returns HTTP 400.
 - Valid receiving succeeds and records a variance where expected.
 - A batch is created with the received quantity and expiry information.
@@ -189,7 +190,7 @@ Expected results:
 
 Objective: Verify purchase-order limits, purchase-order lifecycle, and supplier validation.
 
-Test steps:
+Test Steps:
 1. Retrieve the reorder list and a supplier as purchasing staff.
 2. Attempt to order 9,000 units of product `ACU-1000`.
 3. Attempt to create a purchase order with no items.
@@ -200,7 +201,7 @@ Test steps:
 8. Create a supplier with valid details.
 9. Attempt to create a duplicate supplier.
 
-Expected results:
+Expected Results:
 - An order above the configured maximum returns HTTP 409.
 - A purchase order without items returns HTTP 400.
 - A valid purchase order can be created and sent.
@@ -212,8 +213,9 @@ Expected results:
 
 ### TC-09: Stock Adjustment Requests and Approval
 
-Objective: Verify warehouse adjustment requests and inventory-manager approval.
-Test steps:
+**Objective:** Verify warehouse adjustment requests and inventory-manager approval.
+
+Test Steps:
 1. Identify product `ACC-REM`.
 2. Submit a stock adjustment request as warehouse staff.
 3. Attempt to approve the request as warehouse staff.
@@ -223,7 +225,7 @@ Test steps:
 7. Attempt to approve the same request again.
 8. Submit an adjustment with an excessively large negative quantity.
 
-Expected results:
+Expected Results:
 - The warehouse request is created with pending status.
 - Warehouse staff cannot approve the request.
 - Inventory staff can approve the request.
@@ -233,14 +235,14 @@ Expected results:
 
 ### TC-10: Role-Specific Dashboards
 
-Objective: Verify that each role receives the dashboard sections defined for it.
+bjective: Verify that each role receives the dashboard sections defined for it.
 
-Test steps:
+Test Steps:
 1. Log in separately as administrator, inventory manager, purchasing manager, warehouse staff, and sales staff.
 2. Request `/dashboard` for each role.
 3. Check the response for the expected role-specific sections.
 
-Expected results:
+Expected Results:
 - Each role receives HTTP 200 from the dashboard endpoint.
 - The administrator dashboard includes KPIs, user activity, system status, and recent activity.
 - The inventory dashboard includes KPIs, health, low stock, expiry, and discrepancies.
@@ -252,7 +254,7 @@ Expected results:
 
 Objective: Verify invalid input handling and selected reporting and audit functions.
 
-Test steps:
+Test Steps:
 1. Attempt to create a user with an invalid role.
 2. Attempt to create a user with a short password.
 3. Create a user with valid details.
@@ -264,7 +266,8 @@ Test steps:
 9. Retrieve administrator logs.
 10. Register a new account and attempt to log in before approval.
 
-Expected results:
+
+Expected Results:
 - Invalid user data returns HTTP 400.
 - Valid user creation returns HTTP 201.
 - Invalid settings return HTTP 400; valid settings return HTTP 200.
@@ -278,13 +281,13 @@ Expected results:
 
 Objective: Verify the reorder-point formula, including the seasonal multiplier.
 
-Test steps:
+Test Steps:
 1. Retrieve the inventory product list.
 2. Locate product SKU `ACU-1000`.
 3. Calculate the expected reorder point using average daily usage, lead time, safety stock, and the seasonal rule.
 4. Compare the calculated result with the product's reported reorder point.
 
-Expected results:
+**Expected Results:**
 - The standard calculation uses:
 
   `Reorder Point = (Average Daily Usage × Lead Time) + Safety Stock`
@@ -293,9 +296,11 @@ Expected results:
 - For the seeded test product, the expected value is calculated as either `3 × 14 + 12` outside the seasonal window or `3 × 14 × 4 + 12` inside the tested window.
 - The returned reorder point matches the calculated expected value.
 
+**Verification note:** Confirm the seasonal multiplier and expected values against the actual implementation before treating them as verified.
+
 ## 4. Test Result Recording
 
-Record the result only after executing the corresponding test.
+Record results only after executing the corresponding test.
 
 | Test ID | Test Area | Result | Notes |
 |---|---|---|---|
@@ -312,12 +317,39 @@ Record the result only after executing the corresponding test.
 | TC-11 | Validation and reports | Not yet recorded | |
 | TC-12 | Reorder calculation | Not yet recorded | |
 
-Result definitions:
-- Pass: Actual result matches the expected result.
-- Fail: Actual result differs from the expected result.
-- Blocked: The test cannot be executed because a required service, account, database, or environment is unavailable.
-- Not yet recorded: No execution result has been documented.
+### Result Definitions
 
-## 5. Source Reference
+- **Pass:** Actual result matches the expected result.
+- **Fail:** Actual result differs from the expected result.
+- **Blocked:** The test cannot be executed because a required service, account, database, or environment is unavailable.
+- **Not yet recorded:** No execution result has been documented.
 
-These test cases are derived from the completed system's `tests/api.test.mjs`. The test file should remain the primary reference for the automated API assertions. This document summarizes those assertions for QA reporting and documentation purposes.
+## 5. API Test Failure Documentation
+
+When an automated API test fails, record the failure and investigate its cause before reporting it as a confirmed defect.
+
+For each failure, document:
+
+- Test case ID or automated test name
+- API endpoint and HTTP method, when applicable
+- Expected HTTP status code and response
+- Actual HTTP status code and response
+- Error message or sanitized test output
+- Possible cause and investigation notes
+- Related bug ID in `bug-reports.md`, if a defect is confirmed
+- Retest result after a fix is provided
+
+A failed assertion may be caused by an application defect, incorrect test data, missing permissions, database configuration, or an unavailable service. Confirm the cause before assigning a final bug status.
+
+## 6. Test Execution Notes
+
+- Execute tests only in an appropriate development or test environment.
+- Verify that the API server, database, dependencies, and required test accounts are available.
+- Record actual results instead of assuming that documented expected results have passed.
+- Update the test result table after execution.
+- Link confirmed defects to their corresponding test cases.
+- Keep the QA summary consistent with the recorded results.
+
+## 7. Source Reference
+
+These test cases are derived from the automated test source `tests/api.test.mjs`. The test file should remain the primary reference for the automated API assertions. This document summarizes those assertions for QA reporting and documentation purposes.
