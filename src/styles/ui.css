@@ -724,3 +724,71 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator:hover { opacity:
 .task-card strong { font-size: 24px; line-height: 1.1; }
 .task-card .task-text > span { white-space: normal; font-size: 13px; line-height: 1.3; text-align: center; }
 @media (max-width: 560px) { .task-card { grid-template-columns: 44px minmax(0, 1fr); } .task-card::after { display: none; } }
+/* ==========================================================================
+   v5: dark-mode icon tiles + order progress tracker + order info grid
+   ========================================================================== */
+
+/* ---------- icon tiles: clearly visible in dark mode ---------- */
+:root[data-theme='dark'] .card-title-icon,
+:root[data-theme='dark'] .product-ico { background: color-mix(in srgb, var(--accent) 34%, transparent); color: #fff; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+:root[data-theme='dark'] .product-card-out .product-ico { background: color-mix(in srgb, var(--critical) 34%, transparent); color: #FECACA; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--critical) 55%, transparent); }
+.card-title-icon .icon, .product-ico .icon { stroke-width: 2.1; }
+
+/* ---------- progress tracker ---------- */
+.stepper { list-style: none; margin: 0; padding: 26px 24px 8px; display: grid; grid-template-columns: repeat(4, 1fr); }
+.step { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; padding: 0 8px; }
+.step::before { content: ''; position: absolute; top: 23px; right: 50%; width: 100%; height: 3px; border-radius: 3px; background: var(--border-strong); z-index: 0; }
+.step:first-child::before { display: none; }
+.step-linked::before { background: var(--success); }
+.step-dot { position: relative; z-index: 1; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: var(--surface-alt); color: var(--ink-faint); border: 2px solid var(--border-strong); margin-bottom: 6px; transition: background .2s, border-color .2s; }
+.step-label { font-size: 14.5px; font-weight: 600; color: var(--ink-muted); }
+.step-state { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--ink-faint); }
+.step-hint { font-size: 12px; color: var(--ink-faint); min-height: 16px; }
+
+.step-done .step-dot { background: var(--success); border-color: var(--success); color: #fff; }
+.step-done .step-label { color: var(--ink); }
+.step-done .step-state { color: var(--success); }
+:root[data-theme='dark'] .step-done .step-state { color: var(--success-ink); }
+
+.step-current .step-dot { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 25%, transparent); }
+.step-current .step-label { color: var(--ink); }
+.step-current .step-state { color: var(--accent); }
+:root[data-theme='dark'] .step-current .step-state { color: #93C5FD; }
+.step-pulse { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: step-pulse 1.4s ease-in-out infinite; }
+@keyframes step-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+@media (prefers-reduced-motion: reduce) { .step-pulse { animation: none; } }
+
+.stepper-cancelled .step-dot { opacity: .5; }
+.stepper-foot { display: flex; align-items: center; gap: 14px; padding: 14px 24px 22px; font-size: 12.5px; color: var(--ink-muted); }
+.stepper-bar { flex: 1; height: 6px; border-radius: 6px; background: var(--border-strong); overflow: hidden; }
+.stepper-bar span { display: block; height: 100%; border-radius: 6px; background: var(--success); transition: width .3s ease; }
+.stepper-foot > span:last-child { white-space: nowrap; font-weight: 600; }
+.stepper-banner { display: flex; align-items: center; gap: 8px; margin: 4px 24px 22px; }
+
+/* ---------- customer & order info grid ---------- */
+.info-grid { margin: 0; padding: 22px 24px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px 28px; }
+.info-item { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.info-ico { width: 38px; height: 38px; flex: none; border-radius: 10px; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent-dark); }
+:root[data-theme='dark'] .info-ico { background: color-mix(in srgb, var(--accent) 34%, transparent); color: #fff; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent); }
+.info-text { min-width: 0; }
+.info-text dt { font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; font-weight: 600; color: var(--ink-faint); margin-bottom: 4px; }
+.info-text dd { margin: 0; font-size: 14.5px; font-weight: 500; line-height: 1.4; overflow-wrap: anywhere; }
+.info-sub { display: block; margin-top: 2px; font-size: 12.5px; font-weight: 400; color: var(--ink-muted); }
+
+/* ---------- items card ---------- */
+.items-count { font-size: 12.5px; font-weight: 600; color: var(--ink-muted); }
+.order-total { display: flex; align-items: baseline; justify-content: flex-end; gap: 18px; padding: 16px 24px; border-top: 1px solid var(--border); background: var(--surface-alt); }
+.order-total span { font-size: 12.5px; text-transform: uppercase; letter-spacing: .4px; font-weight: 600; color: var(--ink-muted); }
+.order-total b { font-size: 20px; font-weight: 700; }
+
+@media (max-width: 900px) { .info-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) {
+  .info-grid { grid-template-columns: 1fr; padding: 18px 16px; }
+  .stepper { grid-template-columns: 1fr; gap: 0; padding: 20px 16px 6px; }
+  .step { display: grid; grid-template-columns: 46px 1fr; column-gap: 14px; row-gap: 1px; align-items: center; text-align: left; padding: 0 0 22px; }
+  .step::before { top: -22px; right: auto; left: 22px; width: 3px; height: 22px; }
+  .step-dot { grid-row: 1 / span 3; margin-bottom: 0; }
+  .step-state { justify-self: start; }
+  .stepper-foot, .stepper-banner { margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0; }
+  .order-total { padding: 14px 16px; }
+}

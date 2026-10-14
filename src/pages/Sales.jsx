@@ -4,7 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { api } from '../lib/api';
 import { useApi, useDebounced } from '../lib/hooks';
 import { useToast } from '../components/Toast';
-import { Async, Card, Detail, Field, IconInput, PageHeader, Pill, SearchBox, Table, Tabs, Stamp } from '../components/UI';
+import { Async, Card, Field, IconInput, PageHeader, Pill, SearchBox, Table, Tabs, Stamp } from '../components/UI';
 import Icon from '../components/Icon';
 import { fmtDateTime, fmtMoney } from '../lib/format';
 
@@ -106,6 +106,53 @@ export function SalesOrdersPage({ history }) {
 }
 
 const STEPS = ['pending', 'picking', 'ready', 'shipped'];
+const STEP_META = {
+  pending: { icon: 'pending', label: 'Pending', hint: 'Order received' },
+  picking: { icon: 'pick', label: 'Picking', hint: 'Items being picked' },
+  ready: { icon: 'open', label: 'Ready', hint: 'Packed for shipping' },
+  shipped: { icon: 'truck', label: 'Shipped', hint: 'Out for delivery' },
+};
+
+// Progress tracker: every step is marked done, in progress, or upcoming.
+function OrderProgress({ order }) {
+  const cur = STEPS.indexOf(order.status);
+  const cancelled = order.status === 'cancelled';
+  const stateOf = (i) => (cancelled || cur < 0 ? 'todo' : i < cur ? 'done' : i === cur ? (order.status === 'shipped' ? 'done' : 'current') : 'todo');
+  const stateText = { done: 'Completed', current: 'In progress', todo: 'Waiting' };
+  const stamp = (s) => (s === 'pending' ? fmtDateTime(order.created) : s === 'shipped' && order.shipped ? fmtDateTime(order.shipped) : null);
+  const doneCount = STEPS.filter((_, i) => stateOf(i) === 'done').length;
+  return (
+    <>
+      <ol className={`stepper${cancelled ? ' stepper-cancelled' : ''}`} aria-label="Order progress">
+        {STEPS.map((s, i) => {
+          const st = stateOf(i);
+          const m = STEP_META[s];
+          const when = st === 'done' ? stamp(s) : null;
+          return (
+            <li key={s} className={`step step-${st}${i > 0 && stateOf(i - 1) === 'done' ? ' step-linked' : ''}`} aria-current={st === 'current' ? 'step' : undefined}>
+              <span className="step-dot"><Icon name={st === 'done' ? 'check' : m.icon} size={st === 'done' ? 22 : 20} /></span>
+              <span className="step-label">{m.label}</span>
+              <span className="step-state">{st === 'done' ? <Icon name="check" size={13} /> : st === 'current' ? <span className="step-pulse" /> : null}{stateText[st]}</span>
+              <span className="step-hint">{when || m.hint}</span>
+            </li>
+          );
+        })}
+      </ol>
+      {!cancelled && <div className="stepper-foot"><div className="stepper-bar"><span style={{ width: `${(doneCount / STEPS.length) * 100}%` }} /></div><span>{doneCount} of {STEPS.length} steps completed</span></div>}
+      {cancelled && <div className="banner banner-error stepper-banner" role="alert"><Icon name="ban" size={17} />This order was cancelled.</div>}
+    </>
+  );
+}
+
+function InfoItem({ icon, label, children }) {
+  return (
+    <div className="info-item">
+      <span className="info-ico"><Icon name={icon} size={18} /></span>
+      <div className="info-text"><dt>{label}</dt><dd>{children ?? '-'}</dd></div>
+    </div>
+  );
+}
+
 export function SalesOrderDetail() {
   const { id } = useParams();
   const { can } = useAuth();
@@ -115,12 +162,27 @@ export function SalesOrderDetail() {
   return (
     <Async state={state}>{(o) => (
       <div>
-        <PageHeader crumbs={[{ label: 'Sales Orders', href: '/sales/orders' }, { label: o.code }]} title={o.code} sub={o.customer} action={can('sales.create') && o.status === 'pending' && <button className="btn btn-danger-outline" onClick={cancel}>Cancel order</button>} />
-        <Card title="Progress"><div className="status-strip">{STEPS.map((s) => <div key={s} style={o.status === s ? { outline: '2px solid var(--accent)' } : STEPS.indexOf(s) < STEPS.indexOf(o.status) ? { opacity: .55 } : undefined}><b>{STEPS.indexOf(s) <= STEPS.indexOf(o.status) ? '✓' : '·'}</b><span style={{ textTransform: 'capitalize' }}>{s}</span></div>)}</div>
-          {o.status === 'cancelled' && <div className="banner banner-error" style={{ margin: '0 24px 18px' }}>This order was cancelled.</div>}</Card>
-        <Card title="Customer & order"><Detail items={[['Customer', o.customer], ['Phone', o.phone], ['Address', o.address], ['Created', `${fmtDateTime(o.created)} by ${o.created_by}`], ['Shipped', o.shipped ? fmtDateTime(o.shipped) : '-'], ['Status', <Pill key="s" status={o.status} />]]} /></Card>
-        <Card title="Items"><Table rows={o.items} cols={[{ label: 'Product', render: (i) => <><div className="cell-primary">{i.product}</div><div className="cell-sub mono">{i.sku}</div></> }, { label: 'Qty', num: true, render: (i) => i.qty }, { label: 'Price', num: true, render: (i) => fmtMoney(i.price) }, { label: 'Line total', num: true, render: (i) => fmtMoney(i.qty * i.price) }]} />
-          <div className="list-row"><span /><b>Total {fmtMoney(o.total)}</b></div></Card>
+        <PageHeader crumbs={[{ label: 'Sales Orders', href: '/sales/orders' }, { label: o.code }]} title={o.code} sub={o.customer} action={can('sales.create') && o.status === 'pending' && <button className="btn btn-danger-outline" onClick={cancel}><Icon name="ban" size={16} />Cancel order</button>} />
+        <Card title="Progress" icon="levels" right={<Pill status={o.status} />}><OrderProgress order={o} /></Card>
+        <Card title="Customer & order" icon="user">
+          <dl className="info-grid">
+            <InfoItem icon="user" label="Customer">{o.customer}</InfoItem>
+            <InfoItem icon="phone" label="Phone">{o.phone}</InfoItem>
+            <InfoItem icon="pin" label="Address">{o.address}</InfoItem>
+            <InfoItem icon="calendar" label="Created">{fmtDateTime(o.created)}<span className="info-sub">by {o.created_by}</span></InfoItem>
+            <InfoItem icon="truck" label="Shipped">{o.shipped ? fmtDateTime(o.shipped) : '-'}</InfoItem>
+            <InfoItem icon="info" label="Status"><Pill status={o.status} /></InfoItem>
+          </dl>
+        </Card>
+        <Card title="Items" icon="product" right={<span className="items-count">{o.items.length} item{o.items.length === 1 ? '' : 's'}</span>}>
+          <Table rows={o.items} cols={[
+            { label: 'Product', render: (i) => <><div className="cell-primary">{i.product}</div><div className="cell-sub mono">{i.sku}</div></> },
+            { label: 'Qty', num: true, w: '12%', render: (i) => i.qty },
+            { label: 'Price', num: true, w: '18%', render: (i) => fmtMoney(i.price) },
+            { label: 'Line total', num: true, w: '18%', render: (i) => <b>{fmtMoney(i.qty * i.price)}</b> },
+          ]} />
+          <div className="order-total"><span>Order total</span><b>{fmtMoney(o.total)}</b></div>
+        </Card>
       </div>
     )}</Async>
   );
