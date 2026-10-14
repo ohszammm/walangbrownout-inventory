@@ -135,7 +135,7 @@ docs/                 Test cases, bug reports, user guide, ERD
 .github/              Pull request template, issue template, code owners
 ```
 
-Backend work touches `app/` and `routes/api.php`, database work touches `database/`, frontend work touches `src/`, and QA work touches `tests/` and `docs/`. Keeping each person in their own folders keeps merge conflicts rare. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full team workflow.
+Backend work touches `app/` and `routes/api.php`, database work touches `database/`, frontend work touches `src/`, and QA work touches `tests/` and `docs/`. Keeping each person in their own folders keeps merge conflicts rare. See the per-member tutorials in [docs/tutorials/](docs/tutorials/) for the full team workflow.
 
 ---
 
@@ -177,7 +177,7 @@ All endpoints are under `/api`, JSON in and out. Every route except login, regis
 
 | Role | Team member | Responsibilities | Works in |
 |---|---|---|---|
-| Project Manager / Team Lead | Moro, Samuel P. | Oversees the timeline, coordinates the team, manages the task board, reviews and merges pull requests, owns the repository | `README.md`, `CONTRIBUTING.md`, `.github/`, project scaffold |
+| Project Manager / Team Lead | Moro, Samuel P. | Oversees the timeline, coordinates the team, manages the task board, reviews and merges pull requests, owns the repository | `README.md`, `.github/`, project scaffold |
 | Backend Developer | Ordonia, Cholo Andrew | Implements server-side logic, API endpoints and the business rules for stock, orders, purchasing and alerts | `app/`, `routes/` |
 | Frontend / UI Developer | Morasa, Desiree O. | Builds the user interface, forms and views for the dashboard, inventory, sales, purchasing and warehouse workspaces | `src/`, `public/brand`, `public/media` |
 | Database Administrator | Maño, Cornelio Jr. | Designs and manages the database schema, migrations, seed data and table relationships | `database/`, `docs/database/` |
