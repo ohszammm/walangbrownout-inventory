@@ -792,3 +792,20 @@ input[type='datetime-local']::-webkit-calendar-picker-indicator:hover { opacity:
   .stepper-foot, .stepper-banner { margin-left: 16px; margin-right: 16px; padding-left: 0; padding-right: 0; }
   .order-total { padding: 14px 16px; }
 }
+
+/* ==========================================================================
+   v6: white sidebar in light mode (dark mode keeps the navy sidebar)
+   ========================================================================== */
+:root:not([data-theme='dark']) {
+  --sidebar-bg: #FFFFFF;
+  --sidebar-bg-hover: #F2F4F7;
+  --sidebar-border: #E4E7EC;
+  --sidebar-ink: #101828;
+  --sidebar-ink-muted: #475467;
+}
+:root:not([data-theme='dark']) .sidebar { box-shadow: 1px 0 0 var(--sidebar-border), 4px 0 16px rgba(16, 24, 40, .04); }
+:root:not([data-theme='dark']) .sidebar-section-label { color: #667085; }
+:root:not([data-theme='dark']) .sidebar-user-name { color: var(--sidebar-ink); }
+:root:not([data-theme='dark']) .sidebar-signout:hover { background: #FEF2F2; color: #B42318; border-color: #FECDCA; }
+:root:not([data-theme='dark']) .mobile-topbar { color: var(--sidebar-ink); border-bottom: 1px solid var(--sidebar-border); }
+:root:not([data-theme='dark']) .menu-toggle { color: var(--sidebar-ink); border-color: var(--sidebar-border); }
