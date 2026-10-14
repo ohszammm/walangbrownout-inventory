@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-do
 import { useAuth } from '../auth/AuthContext';
 import { useApi } from '../lib/hooks';
 import { NAV, ROLE_LABEL } from '../nav';
-import { useTheme } from '../theme';
+import { logoFor, useTheme } from '../theme';
 import Icon from './Icon';
 import Avatar from './Avatar';
 
@@ -53,7 +53,7 @@ export default function Layout() {
         <div className="app-stars" aria-hidden="true"><span className="stars-a" /><span className="stars-b" /><span className="stars-c" /></div>
         <aside className="sidebar">
           <div className="sidebar-brand">
-            <img src="/brand/logo-dark.png" alt="WalangBrownout Appliances" className="sidebar-logo" />
+            <img src={logoFor(theme)} alt="WalangBrownout Appliances" className="sidebar-logo" />
             <div className="sidebar-brand-sub">Inventory Management System</div>
           </div>
           <nav className="sidebar-nav" aria-label="Main">
